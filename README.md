@@ -1,6 +1,8 @@
 Skinned Mesh Modifier Example
 =============================
 
+![gif](http://i.imgur.com/AoAt2bm.gif)
+
 This example shows how to modify vertex positions and recalculate normals of an
 animating skinned mesh with a surface shader.
 
