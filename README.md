@@ -11,33 +11,33 @@ Why modifying vertices is difficult
 
 Actually just modifying vertex positions with a surface shader is quite easy
 with using a [custom vertex modification function][VertexModifier]. However,
-recalculating normals after modification is difficult because usually a vertex
-modifier doesn't know positions of their neighbor vertices.
+recalculating normals after modifications is difficult because usually a vertex
+modifier doesn't know positions of their neighboring vertices.
 
 [VertexModifier]: https://docs.unity3d.com/Manual/SL-SurfaceShaderExamples.html
 
-In this example, we use a mesh converter that encodes positions of neighbor
+In this example, we use a mesh converter that encodes positions of neighboring
 vertices into texture coordinate attributes, so that we can reconstruct the
-neighbor vertices in a vertex modifier.
+neighboring vertices in a vertex modifier.
 
 How to reconstruct neighbor vertices
 ------------------------------------
 
 If a mesh is completely rigid (not skinned), we can simply store the positions
-of the neighbor vertices as 3D texture coodinates. This approach is not enough
-for skinned meshes because the neighbor vertices will be moved from the original
-positions by a skin deformation.
+of the neighboring vertices as 3D texture coodinates. This approach is not
+enough for skinned meshes because the neighboring vertices will be moved from
+the original positions by a skin deformation.
 
 Instead of directly storing the vertex positions, we transform them from the
-model space into the tangent space and store them into the texture coordinate
-attributes. In a vertex modifier, we transform them back from the tangent space
-(which is deformed by skinning) to the model space. Although this doesn't
-reflect accurate deformations because of skewness of skinning, we can get a
-fairly good approximation of them.
+model space into each tangent space and store them into the texture coordinate
+attributes. In a vertex modifier, we can transform them back from each tangent
+space (which is deformed by skinning) to the model space. Although this doesn't
+reflect the accurate deformations because of skewness of skinning, we can get
+fairly good approximations of them.
 
 In this example, we use a further simplification; Assuming that a given skinned
 mesh is flat shaded and all vertices are separated (not shared between
-triangles). Under this assumption, it's clear that all the neighbor vertices are
+triangles). Under this assumption, it's clear that neighboring vertices are
 laying on its tangent plane, and thus we can ignore the normal axis component
 (it will be always zero).
 
@@ -65,3 +65,12 @@ memory-efficient than doing the same operation on the CPU side.
 [Shader source](https://github.com/keijiro/SkinnedVertexModifier/blob/master/Assets/SkinnedVertexModifier/Shrink.shader).
 
 This shader modifies vertex positions toward centroid of belonging triangle.
+
+Things to be improved
+---------------------
+
+- This example doesn't have a specialized motion vector pass. It introduces
+  artifacts when using motion vectors (motion blur, TXAA, etc.).
+
+- This approach is only useful for flat shaded models. If the model is smooth
+  shaded, it might be better to recalculate normals with an analytical approach.
