@@ -23,22 +23,23 @@ neighbor vertices in a vertex modifier.
 How to reconstruct neighbor vertices
 ------------------------------------
 
-If a mesh is completely rigid (not skinned), we can simply store positions of
-neighbor vertices as 3D texture coodinates. This approach is not enough for
-skinned meshes because neighbor vertices will be moved from original positions
-by a skin deformation.
+If a mesh is completely rigid (not skinned), we can simply store the positions
+of the neighbor vertices as 3D texture coodinates. This approach is not enough
+for skinned meshes because the neighbor vertices will be moved from the original
+positions by a skin deformation.
 
-Instead of directly storing vertex positions, we transform them from model space
-into tangent space and store them into texture coordinate attributes. In a
-vertex modifier, we transform them back from tangent space (which is deformed by
-skinning) to model space. Although this doesn't reflect accurate defromation
-because of skewness of skinning, we can get a fairly good approximation of them.
+Instead of directly storing the vertex positions, we transform them from the
+model space into the tangent space and store them into the texture coordinate
+attributes. In a vertex modifier, we transform them back from the tangent space
+(which is deformed by skinning) to the model space. Although this doesn't
+reflect accurate deformations because of skewness of skinning, we can get a
+fairly good approximation of them.
 
 In this example, we use a further simplification; Assuming that a given skinned
 mesh is flat shaded and all vertices are separated (not shared between
-triangles). Under this simplification, we can assume that the neighbor vertices
-are laying on its tangent plane, and thus we can ignore the normal axis
-component.
+triangles). Under this assumption, it's clear that all the neighbor vertices are
+laying on its tangent plane, and thus we can ignore the normal axis component
+(it will be always zero).
 
 We use [an editor script][EditorScript] that converts a mesh in build time. It
 encodes centroids into UV2 and neighbor vertices into UV3.
